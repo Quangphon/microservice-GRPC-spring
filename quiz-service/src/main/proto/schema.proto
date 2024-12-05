@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+//Chỉ định package Java tương ứng để khi file này được biên dịch ra mã nguồn Java,
+// các class sẽ thuộc package com.quangoi.quiz_service.
+option java_package = "com.quangoi.quiz_service";
+//Định nghĩa tên class bao ngoài (outer class) trong Java sẽ là QuestionServiceProto
+option java_outer_classname = "QuestionServiceProto";
+
+service QuestionService {
+//    Lấy danh sách các ID câu hỏi dựa trên categoryName và số lượng yêu cầu.
+  rpc GetQuestionsForQuiz(GetQuestionsRequest) returns (GetQuestionsResponse);
+//    Lấy thông tin chi tiết câu hỏi từ danh sách questionIds.
+  rpc GetQuestsFromId(GetQuestsRequest) returns (GetQuestsResponse);
+//    Tính điểm dựa trên danh sách các câu trả lời (responses).
+  rpc GetScore(GetScoreRequest) returns (GetScoreResponse);
+}
+
+//  1.  GetQuestionsForQuiz
+message GetQuestionsRequest {
+  string categoryName = 1;
+  int32 numQuestions = 2;
+}
+
+message GetQuestionsResponse {
+//  repeated thể hiện 1 mảng
+    repeated int32 questionIds = 1;
+}
+
+//  2.  GetQuestsFromId
+message GetQuestsRequest {
+  repeated int32 questionIds = 1;
+}
+
+message GetQuestsResponse {
+  repeated QuestionWrapper questions = 1;
+}
+
+//  3. get score
+message GetScoreRequest {
+  repeated Response responses = 1;
+}
+
+message GetScoreResponse {
+  int32 score = 1;
+}
+
+// Other
+message QuestionWrapper {
+  int32 id = 1;
+  string question = 2;
+  repeated string options = 3;
+  int32 correctOption = 4;
+}
+
+message Response {
+  int32 questionId = 1;
+  int32 selectedOption = 2;
+}
